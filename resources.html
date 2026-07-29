@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Корисні ресурси | Книги, подкасти, додатки для ментального здоров'я | Safe Place</title>
+  <meta name="description" content="Підбірка перевірених ресурсів: книги з психології, подкасти про ментальне здоров'я, корисні додатки, тести на тривогу та депресію. Рекомендації експертів Safe Place.">
+  
+  <link rel="canonical" href="https://kateryna-havryliuk.github.io/SafePlace_new_SEO/resources.html">
+  
+  <!-- Schema.org: ItemList (список ресурсів) + Book + CreativeWork -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Корисні ресурси для ментального здоров'я",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@type": "Book",
+          "name": "Дар Бороновська. «Вигорання»",
+          "author": {
+            "@type": "Person",
+            "name": "Дар Бороновська"
+          },
+          "description": "Як розпізнати, запобігти та подолати емоційне вигорання"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+          "@type": "Book",
+          "name": "Марк Менсон. «Тонке мистецтво пофігізму»",
+          "author": {
+            "@type": "Person",
+            "name": "Марк Менсон"
+          },
+          "description": "Парадоксальний шлях до щасливого життя"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@type": "CreativeWork",
+          "name": "Подкаст «Психологія спрощено»",
+          "creator": {
+            "@type": "Organization",
+            "name": "Українська психологічна спільнота"
+          },
+          "genre": "Podcast",
+          "description": "Просто про складні психологічні теми"
+        }
+      }
+    ]
+  }
+  </script>
+  
+  <!-- Schema.org: WebPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Корисні ресурси Safe Place",
+    "description": "Підбірка книг, подкастів, додатків та тестів для ментального здоров'я"
+  }
+  </script>
+  
+  <!-- BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Головна",
+        "item": "https://kateryna-havryliuk.github.io/SafePlace_new_SEO/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Корисні ресурси",
+        "item": "https://kateryna-havryliuk.github.io/SafePlace_new_SEO/resources.html"
+      }
+    ]
+  }
+  </script>
+  <link rel="alternate" hreflang="uk" href="https://kateryna-havryliuk.github.io/SafePlace_new_SEO/page.html" />
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <style>
+    .resources-hero { padding: 4rem 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; }
+    .resources-tabs { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
+    .tab-btn { padding: 0.8rem 1.5rem; border-radius: 25px; background: white; color: #667eea; border: 2px solid #667eea; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+    .tab-btn:hover, .tab-btn.active { background: #667eea; color: white; }
+    .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; padding: 2rem 0; }
+    .resource-card { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: transform 0.3s; display: flex; flex-direction: column; }
+    .resource-card:hover { transform: translateY(-5px); }
+    .resource-icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+    .resource-card.book .resource-icon { background: #feebc8; color: #c05621; }
+    .resource-card.app .resource-icon { background: #c6f6d5; color: #276749; }
+    .resource-card.podcast .resource-icon { background: #e9d8fd; color: #6b46c1; }
+    .resource-card.test .resource-icon { background: #bee3f8; color: #2c5282; }
+    .resource-type { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 0.5rem; }
+    .resource-card.book .resource-type { color: #c05621; }
+    .resource-card.app .resource-type { color: #276749; }
+    .resource-card.podcast .resource-type { color: #6b46c1; }
+    .resource-card.test .resource-type { color: #2c5282; }
+    .resource-title { font-size: 1.25rem; font-weight: 700; color: #2d3748; margin-bottom: 0.5rem; }
+    .resource-author { color: #667eea; font-size: 0.9rem; margin-bottom: 1rem; }
+    .resource-desc { color: #4a5568; line-height: 1.6; flex-grow: 1; margin-bottom: 1rem; }
+    .resource-link { display: inline-flex; align-items: center; gap: 0.5rem; color: #667eea; font-weight: 600; text-decoration: none; }
+    .resource-link:hover { color: #764ba2; }
+    .rating { display: flex; gap: 0.25rem; margin-bottom: 1rem; }
+    .rating i { color: #ecc94b; font-size: 0.875rem; }
+    .test-section { background: #f7fafc; padding: 3rem 0; margin-top: 3rem; }
+    .test-card { background: white; border-radius: 16px; padding: 2rem; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .test-btn { display: inline-block; margin-top: 1rem; padding: 1rem 2rem; background: #667eea; color: white; border-radius: 8px; text-decoration: none; font-weight: 600; }
+    .disclaimer { background: #fffaf0; border: 2px solid #ed8936; border-radius: 12px; padding: 1.5rem; margin: 2rem 0; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-content">
+      <div class="brand">
+        <div class="logo">🪷</div>
+        <span>Safe Place</span>
+      </div>
+      <nav class="nav-links">
+            <a href="index.html">Головна</a>
+            <a href="chat.html">Поговорити</a>
+            <a href="techniques.html">Техніки</a>
+            <a href="blog.html">Блог</a>
+            <a href="resources.html">Ресурси</a>
+            <a href="about.html">Про нас</a>
+            <a href="contact.html">Контакти</a>
+            <a href="emergency.html" style="color: #e53e3e; font-weight: 600;">Екстрена допомога</a>
+        </nav>
+    </div>
+  </header>
+
+  <section class="resources-hero">
+    <div class="container">
+      <h1 style="font-size: 3rem; margin-bottom: 1rem;">Корисні ресурси</h1>
+      <p style="font-size: 1.3rem; opacity: 0.9;">Книги, подкасти, додатки та тести, які рекомендують психологи</p>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="resources-tabs">
+      <button class="tab-btn active" data-tab="all">Всі ресурси</button>
+      <button class="tab-btn" data-tab="books">Книги</button>
+      <button class="tab-btn" data-tab="apps">Додатки</button>
+      <button class="tab-btn" data-tab="podcasts">Подкасти</button>
+      <button class="tab-btn" data-tab="tests">Тести</button>
+    </div>
+
+    <div class="resources-grid">
+      <!-- Книга 1 -->
+      <div class="resource-card book" data-category="books">
+        <div class="resource-icon">
+          <i class="fas fa-book"></i>
+        </div>
+        <div class="resource-type">Книга</div>
+        <h3 class="resource-title">«Прекрасні дрібниці. Поради на всі випадки життя»</h3>
+        <div class="resource-author">Шерил Стрейд</div>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+          <span style="color: #718096; margin-left: 0.5rem;">4.8/5</span>
+        </div>
+        <p class="resource-desc">
+          Шерил Стрейд, авторка бестселерів, уже понад 10 років веде авторську колонку на літературному порталі The Rumpus, у якій ділиться своїми міркуваннями щодо найрізноманітніших життєвих ситуацій. Логічно пояснюючи емоції людей, ставлячись із розумінням та щирістю до кожного читача, згадуючи пережитий особисто й чужий досвід, додаючи дещицю гумору й багато співчуття, Шерил Стрейд допомогла багатьом читачам пережити складні часи, випливти на поверхню й побачити світло та берег посеред, здавалося б, суцільного океану страждань. Найцікавіші матеріали цієї колонки й стали основою книги, здатної допомогти подолати життєві труднощі.
+        </p>
+        <a href="https://book-ye.com.ua/nehudozhnja-literatura/gumanitarni-nauki/psykholohiya/prekrasni-dribnici-poradi-na-vsi-vipadki-zhittja/" target="_blank" rel="noopener" class="resource-link">
+          Де придбати <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+
+      <!-- Книга 2 -->
+      <div class="resource-card book" data-category="books">
+        <div class="resource-icon">
+          <i class="fas fa-book"></i>
+        </div>
+        <div class="resource-type">Книга</div>
+        <h3 class="resource-title">«Як впоратися зі стресом»</h3>
+        <div class="resource-author">Ірина Зелінгер</div>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="far fa-star"></i>
+          <span style="color: #718096; margin-left: 0.5rem;">4.2/5</span>
+        </div>
+        <p class="resource-desc">
+          Часто через проблеми на роботі та в особистому житті ми відчуваємо складні, неприємні емоції та почуття – тривогу, роздратування, невпевненість… І ми не можемо змінити те, що відбувається, адже не все залежить від нас. Однак у наших силах змінити своє ставлення та реакції – за допомогою розвитку емоційного інтелекту.
+Рішення за вами: продовжувати страждати від тривоги або взяти емоції під свій контроль.
+Ця книга для тих, хто втомився від постійного стресу і хоче навчитися використовувати його собі на користь.
+Для тих, хто відчуває, що емоції керують їхнім життям, і хоче повернути контроль у свої руки.
+Для тих, хто шукає практичні інструменти для особистісного зростання.
+        </p>
+        <a href="https://book-ye.com.ua/nehudozhnja-literatura/gumanitarni-nauki/psykholohiya/jak-vporatisja-zi-stresom/" target="_blank" rel="noopener" class="resource-link">
+          Де придбати <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+
+      <!-- Книга 3 -->
+      <div class="resource-card book" data-category="books">
+        <div class="resource-icon">
+          <i class="fas fa-book"></i>
+        </div>
+        <div class="resource-type">Книга</div>
+        <h3 class="resource-title">«Тією горою є ви. Як перетворити самосаботаж на самовдосконалення»</h3>
+        <div class="resource-author">Бріанна Вест</div>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <span style="color: #718096; margin-left: 0.5rem;">5.0/5</span>
+        </div>
+        <p class="resource-desc">
+          Книга " Тією горою є ви. Як перетворити самосаботаж на самовдосконалення" від Бріанни Вест - це надзвичайно корисний посібник для всіх тих, хто бореться з такою специфічною та вельми шкідливою звичкою як самосаботаж. Автор пропонує читачам поглянути на свої звички з нової, більш зрозумілої перспективи, заснованої на знаннях про фізіологію, психологію та науку про поведінку. Вона показує, як багато з наших звичок і реакцій ґрунтуються на підсвідомих процесах і змінити їх можна тільки тоді, коли ми зрозуміємо їх справжнє джерело.
+Автор також дає поради, як розвинути свій емоційний інтелект, щоб краще контролювати свої емоції і знайти мотивацію для змін. Вона також ділиться своїми особистими історіями і досвідом, який допоміг їй самій здолати самосаботаж і досягти своїх цілей.
+        </p>
+        <a href="https://book-ye.com.ua/nehudozhnja-literatura/gumanitarni-nauki/psykholohiya/tiyeyu-horoyu-ye-vy-yak-peretvoryty-samosabotazh-na-samovdoskonalennya/?sc_content=35409_r2730v3295" target="_blank" rel="noopener" class="resource-link">
+          Де придбати <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+
+      <!-- Додаток 1 -->
+      <div class="resource-card app" data-category="apps">
+        <div class="resource-icon">
+          <i class="fas fa-mobile-alt"></i>
+        </div>
+        <div class="resource-type">Додаток</div>
+        <h3 class="resource-title">Headspace</h3>
+        <div class="resource-author">Медитація та осознаність</div>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+          <span style="color: #718096; margin-left: 0.5rem;">4.9/5</span>
+        </div>
+        <p class="resource-desc">
+          Найпопулярніший додаток для медитації. Курси для початківців, сон, управління стресом. Частина контенту безкоштовна.
+        </p>
+        <a href="https://www.headspace.com/" target="_blank" rel="noopener" class="resource-link">
+          Завантажити <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+
+      <!-- Додаток 2 -->
+      <div class="resource-card app" data-category="apps">
+        <div class="resource-icon">
+          <i class="fas fa-mobile-alt"></i>
+        </div>
+        <div class="resource-type">Додаток</div>
+        <h3 class="resource-title">Sanvello</h3>
+        <div class="resource-author">Терапія та трекінг настрою</div>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="far fa-star"></i>
+          <span style="color: #718096; margin-left: 0.5rem;">4.3/5</span>
+        </div>
+        <p class="resource-desc">
+          Дневник настрою, CBT-техніки, спільнота підтримки. Спеціально створений для тривоги та депресії.
+        </p>
+        <a href="https://www.sanvello.com/" target="_blank" rel="noopener" class="resource-link">
+          Завантажити <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+
+      <!-- Подкаст 1 -->
+      <div class="resource-card podcast" data-category="podcasts">
+        <div class="resource-icon">
+          <i class="fas fa-podcast"></i>
+        </div>
+        <div class="resource-type">Подкаст</div>
+        <h3 class="resource-title">«Психологія спрощено»</h3>
+        <div class="resource-author">Українська психологічна спільнота</div>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <span style="color: #718096; margin-left: 0.5rem;">4.9/5</span>
+        </div>
+        <p class="resource-desc">
+          Просто про складні психологічні теми: травма, прив'язаність, емоційний інтелект, стосунки. Новий епізод щотижня.
+        </p>
+        <a href="https://soundcloud.com/psychologiyasprosheno" target="_blank" rel="noopener" class="resource-link">
+          Слухати <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+
+      <!-- Подкаст 2 -->
+      <div class="resource-card podcast" data-category="podcasts">
+        <div class="resource-icon">
+          <i class="fas fa-podcast"></i>
+        </div>
+        <div class="resource-type">Подкаст</div>
+        <h3 class="resource-title">«Терапія чай»</h3>
+        <div class="resource-author">Подкаст про ментальне здоров'я</div>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+          <span style="color: #718096; margin-left: 0.5rem;">4.7/5</span>
+        </div>
+        <p class="resource-desc">
+          Розмови про терапію, саморозвиток та життя. Без психологічного жаргону — як розмова з подругою за чаєм.
+        </p>
+        <a href="https://www.youtube.com/c/ТерапіяЧай" target="_blank" rel="noopener" class="resource-link">
+          Слухати <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="test-section">
+    <div class="container">
+      <h2 class="section-title" style="text-align: center;">Самодіагностика</h2>
+      <p style="text-align: center; color: #4a5568; margin-bottom: 2rem;">Тести не замінюють діагноз лікаря, але допомагають зрозуміти свій стан</p>
+      
+      <div class="resources-grid">
+        <div class="test-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">😰</div>
+          <h3>Шкала тривоги Гамільтона (HARS)</h3>
+          <p style="color: #4a5568; margin-bottom: 1rem;">
+            Класичний тест для оцінки рівня тривоги. 14 питань, 5 хвилин часу.
+          </p>
+          <div style="background: #f7fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: left;">
+            <strong>Що вимірює:</strong>
+            <ul style="margin: 0.5rem 0 0 1rem; color: #718096;">
+              <li>Соматичну тривогу</li>
+              <li>Психічну тривогу</li>
+              <li>Страхи та фобії</li>
+              <li>Недосипання</li>
+            </ul>
+          </div>
+          <a href="https://www.testometrika.com/ru/personality-and-temper/test-hamiltona-dlya-opredeleniya-urovnya-trevozhnosti/" target="_blank" rel="noopener" class="test-btn">
+            <i class="fas fa-clipboard-check"></i> Пройти тест
+          </a>
+        </div>
+
+        <div class="test-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">😔</div>
+          <h3>Шкала депресії Бека (BDI)</h3>
+          <p style="color: #4a5568; margin-bottom: 1rem;">
+            Найвідоміший тест для скринінгу депресії. Допомагає відрізнити поганий настрій від депресивного стану.
+          </p>
+          <div style="background: #f7fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: left;">
+            <strong>Що вимірює:</strong>
+            <ul style="margin: 0.5rem 0 0 1rem; color: #718096;">
+              <li>Садність та апатію</li>
+              <li>Почуття провини</li>
+              <li>Порушення сну та апетиту</li>
+              <li>Суїцидальні думки</li>
+            </ul>
+          </div>
+          <a href="https://www.testometrika.com/ru/personality-and-temper/shkala-depressii-beka/" target="_blank" rel="noopener" class="test-btn">
+            <i class="fas fa-clipboard-check"></i> Пройти тест
+          </a>
+        </div>
+
+        <div class="test-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">🔥</div>
+          <h3>Тест на емоційне вигорання (MBI)</h3>
+          <p style="color: #4a5568; margin-bottom: 1rem;">
+            Maslach Burnout Inventory — золотий стандарт для оцінки професійного вигорання.
+          </p>
+          <div style="background: #f7fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: left;">
+            <strong>Що вимірює:</strong>
+            <ul style="margin: 0.5rem 0 0 1rem; color: #718096;">
+              <li>Емоційне виснаження</li>
+              <li>Деперсоналізацію</li>
+              <li>Редукцію досягнень</li>
+              <li>Загальний індекс вигорання</li>
+            </ul>
+          </div>
+          <a href="https://www.testometrika.com/ru/personality-and-temper/test-na-professionalnoe-vygoranie/" target="_blank" rel="noopener" class="test-btn">
+            <i class="fas fa-clipboard-check"></i> Пройти тест
+          </a>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        <h4 style="margin-top: 0; color: #c05621;"><i class="fas fa-exclamation-triangle"></i> Важливо</h4>
+        <p style="margin-bottom: 0;">
+          Результати онлайн-тестів мають орієнтовний характер і не є медичним діагнозом. 
+          Якщо ви відчуваєте стійке погіршення стану — зверніться до 
+          <a href="emergency.html" style="color: #c05621; font-weight: 600;">кваліфікованого спеціаліста</a> 
+          або подзвоніть на <a href="tel:0800500225" style="color: #c05621; font-weight: 600;">0-800-500-225</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" style="padding: 3rem 1rem;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3rem; border-radius: 20px; text-align: center;">
+      <h2 style="margin-bottom: 1rem;">Не знайшли потрібне?</h2>
+      <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 1.5rem;">
+        Наш AI-помічник може підібрати ресурси спеціально під ваш запит
+      </p>
+      <a href="chat.html" class="btn-primary" style="display: inline-block; background: white; color: #667eea;">
+        <i class="fas fa-robot"></i> Запитати рекомендацію
+      </a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-text">© 2026 Safe Place · Корисні ресурси для ментального здоров'я</div>
+      <div style="margin-top: 1rem;">
+        <a href="privacy.html" style="color: #667eea; margin-right: 1rem;">Конфіденційність</a>
+        <a href="contact.html" style="color: #667eea;">Контакти</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Проста фільтрація без реєстрації
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const filter = this.dataset.tab;
+        document.querySelectorAll('.resource-card').forEach(card => {
+          if (filter === 'all' || card.dataset.category === filter) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

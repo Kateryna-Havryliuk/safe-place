@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>AI Аналітика з прогнозуванням | Safe Place</title>
+    <meta name="description" content="Персональна аналітика емоційного стану з AI прогнозуванням настрою на основі реальних даних.">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1a365d;
+            --muted: #718096;
+            --border-color: #e2e8f0;
+        }
+        
+        [data-theme="dark"] {
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --text-color: #f1f5f9;
+            --muted: #94a3b8;
+            --border-color: #4a5568;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            color: white;
+        }
+        
+        .header h1 { margin: 0 0 10px 0; font-size: 2.5rem; }
+        .header p { margin: 0; opacity: 0.9; font-size: 1.1rem; }
+        
+        .data-source-panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--secondary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .data-source-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .data-source-header h3 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .connection-status.connected {
+            background: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+        }
+        
+        .connection-status.disconnected {
+            background: rgba(231, 76, 60, 0.15);
+            color: #c0392b;
+        }
+        
+        .connection-status.syncing {
+            background: rgba(243, 156, 18, 0.15);
+            color: #d68910;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .connected .status-dot { background: #27ae60; }
+        .disconnected .status-dot { background: #c0392b; animation: none; }
+        .syncing .status-dot { background: #f39c12; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        .data-sources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .data-source-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: var(--bg-color);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .data-source-item i { font-size: 24px; color: var(--primary-color); }
+        .data-source-info { flex: 1; }
+        .data-source-name { font-weight: 600; font-size: 14px; }
+        .data-source-count { font-size: 12px; color: var(--muted); }
+        .last-sync { font-size: 12px; color: var(--muted); margin-top: 10px; text-align: right; }
+        
+        .prediction-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+        }
+        
+        .prediction-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .prediction-header h2 { margin: 0; font-size: 1.8rem; }
+        
+        .ai-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .prediction-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .prediction-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .prediction-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.2); }
+        .prediction-card.week { border-top: 4px solid #2ecc71; }
+        .prediction-card.tomorrow { border-top: 4px solid #f1c40f; }
+        .prediction-card.risk { border-top: 4px solid #e74c3c; }
+        
+        .prediction-label { font-size: 14px; opacity: 0.9; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .prediction-value { font-size: 18px; font-weight: 600; text-align: center; margin: 10px 0; line-height: 1.4; }
+        .prediction-confidence { font-size: 12px; opacity: 0.8; text-align: center; margin-top: 10px; }
+        
+        .confidence-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 1s ease;
+        }
+        
+        .prediction-factors {
+            margin-top: 30px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .factor-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        
+        .factor-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .factor-tag.positive { background: rgba(46, 204, 113, 0.3); }
+        .factor-tag.negative { background: rgba(231, 76, 60, 0.3); }
+        .factor-tag.neutral { background: rgba(149, 165, 166, 0.3); }
+        
+        .prediction-chart-container {
+            margin-top: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        
+        .prediction-chart-container canvas { max-height: 300px; width: 100%; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card i { font-size: 32px; margin-bottom: 15px; }
+        .stat-value { font-size: 36px; font-weight: 700; margin: 10px 0; }
+        .stat-label { font-size: 14px; color: var(--muted); }
+        
+        .chart-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-container {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        .chart-container h3 { margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px; }
+        .chart-container canvas { width: 100% !important; height: 300px !important; }
+        
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            padding: 15px;
+        }
+        
+        .heatmap-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: help;
+            transition: all 0.2s ease;
+        }
+        
+        .heatmap-cell:hover { transform: scale(1.05); }
+        
+        .loading-spinner { text-align: center; padding: 50px; }
+        .loading-spinner i { font-size: 40px; color: var(--primary-color); animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .login-prompt {
+            text-align: center;
+            padding: 50px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            max-width: 400px;
+            margin: 50px auto;
+        }
+        
+        .login-prompt i { font-size: 48px; color: var(--primary-color); margin-bottom: 20px; }
+        .login-prompt button {
+            padding: 12px 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .no-data-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            margin: 20px 0;
+        }
+        
+        .no-data-state i { font-size: 64px; color: var(--muted); margin-bottom: 20px; }
+        .btn-primary {
+            padding: 12px 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .analytics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .period-selector { display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        .period-btn {
+            padding: 8px 20px;
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            color: var(--text-color);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .period-btn.active { background: var(--primary-color); color: white; }
+        
+        .export-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .export-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        
+        .export-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .export-btn.json { background: #3498db; }
+        .export-btn.csv { background: #2ecc71; }
+        .export-btn.pdf { background: #e74c3c; }
+        
+        .recommendations-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        
+        .recommendation-card {
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 4px solid;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .recommendation-card.clinical { border-left-color: #3498db; }
+        .recommendation-card.behavioral { border-left-color: #2ecc71; }
+        .recommendation-card.crisis { border-left-color: #e74c3c; }
+        
+        .recommendation-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+        .recommendation-icon { font-size: 28px; }
+        
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+        
+        .card h3 { margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px; }
+        
+        .insight-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: var(--bg-color);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 10000;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            border-left: 4px solid;
+        }
+        
+        .export-btn.json { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .export-btn.csv { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .export-btn.pdf { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .export-btn.excel { background: linear-gradient(135deg, #27ae60, #1e8449); }
+
+        .export-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .export-btn:active {
+            transform: translateY(0);
+        }
+
+        .notification.show { transform: translateX(0); }
+        .notification.success { border-left-color: #2ecc71; }
+        .notification.error { border-left-color: #e74c3c; }
+        .notification.info { border-left-color: #3498db; }
+    </style>
+    
+    <script>
+        (function() {
+            const saved = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = saved || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 AI Аналітика з прогнозуванням</h1>
+            <p>Аналіз реальних даних для прогнозування емоційного стану</p>
+        </div>
+
+        <div id="loginPrompt" class="login-prompt" style="display: none;">
+            <i class="fas fa-lock"></i>
+            <h2>Доступ до аналітики</h2>
+            <p>Будь ласка, увійдіть для перегляду персональної аналітики</p>
+            <button onclick="window.location.href='account.html'">Увійти</button>
+        </div>
+
+        <div id="analyticsContent" style="display: none;">
+            <div class="data-source-panel">
+                <div class="data-source-header">
+                    <h3><i class="fas fa-database"></i> Джерело даних</h3>
+                    <span class="connection-status syncing" id="connectionStatus">
+                        <span class="status-dot"></span> Завантаження...
+                    </span>
+                </div>
+                <div class="data-sources-grid">
+                    <div class="data-source-item">
+                        <i class="fas fa-server"></i>
+                        <div class="data-source-info">
+                            <div class="data-source-name">Сервер бази даних</div>
+                            <div class="data-source-count" id="serverCount">Завантаження...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="last-sync" id="lastSync">Останнє оновлення: --</div>
+            </div>
+
+            <div class="analytics-header">
+                <div class="period-selector">
+                    <button class="period-btn active" data-days="7">7 днів</button>
+                    <button class="period-btn" data-days="30">30 днів</button>
+                    <button class="period-btn" data-days="90">3 місяці</button>
+                </div>
+            </div>
+
+            <div id="loadingIndicator" class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Завантаження даних...</p>
+            </div>
+
+            <div id="noDataState" class="no-data-state" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <h3>Недостатньо даних для аналізу</h3>
+                <p>Почніть використовувати чат для отримання персональної аналітики</p>
+                <a href="chat.html" class="btn-primary">Перейти до чату</a>
+            </div>
+
+            <div id="predictionSection" class="prediction-section" style="display: none;">
+                <div class="prediction-header">
+                    <i class="fas fa-brain" style="font-size: 36px;"></i>
+                    <div>
+                        <h2>AI Прогнозування настрою</h2>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">На основі ваших реальних даних</p>
+                    </div>
+                    <span class="ai-badge"><i class="fas fa-robot"></i> AI Powered</span>
+                </div>
+                <div class="prediction-cards" id="predictionCards"></div>
+                <div class="prediction-factors">
+                    <h4><i class="fas fa-sliders-h"></i> Фактори аналізу</h4>
+                    <div class="factor-list" id="factorList"></div>
+                </div>
+                <div class="prediction-chart-container">
+                    <h4><i class="fas fa-chart-area"></i> Динаміка активності</h4>
+                    <canvas id="predictionChart"></canvas>
+                </div>
+                <div id="predictionAlert" class="prediction-alert" style="display: none;"></div>
+            </div>
+
+            <div class="stats-grid" id="statsGrid" style="display: none;">
+                <div class="stat-card"><i class="fas fa-comments"></i><div class="stat-value" id="statTotalMessages">0</div><div class="stat-label">Всього повідомлень</div></div>
+                <div class="stat-card"><i class="fas fa-user"></i><div class="stat-value" id="statUserMessages">0</div><div class="stat-label">Ваші повідомлення</div></div>
+                <div class="stat-card"><i class="fas fa-robot"></i><div class="stat-value" id="statBotMessages">0</div><div class="stat-label">Відповіді AI</div></div>
+                <div class="stat-card"><i class="fas fa-exclamation-triangle"></i><div class="stat-value" id="statCritical">0</div><div class="stat-label">Критичних ситуацій</div></div>
+                <div class="stat-card"><i class="fas fa-smile"></i><div class="stat-value" id="statSentiment">0</div><div class="stat-label">Середній настрій</div></div>
+                <div class="stat-card"><i class="fas fa-calendar"></i><div class="stat-value" id="statDays">0</div><div class="stat-label">Днів активності</div></div>
+            </div>
+
+            <div class="card" id="heatmapCard" style="display: none;">
+                <h3><i class="fas fa-calendar-alt"></i> Активність по годинах</h3>
+                <div id="heatmapContainer" class="heatmap-grid"></div>
+            </div>
+
+            <div class="chart-row" id="chartsRow" style="display: none;">
+                <div class="chart-container">
+                    <h3><i class="fas fa-chart-bar"></i> Теми обговорень</h3>
+                    <canvas id="topicsChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3><i class="fas fa-chart-line"></i> Динаміка повідомлень</h3>
+                    <canvas id="trendsChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card" id="trendsCard" style="display: none;">
+                <h3><i class="fas fa-chart-line"></i> Аналіз трендів</h3>
+                <div id="trendsContainer"></div>
+            </div>
+
+            <div class="card" id="recommendationsCard" style="display: none;">
+                <h3><i class="fas fa-lightbulb"></i> Рекомендації</h3>
+                <div id="recommendationsList" class="recommendations-grid"></div>
+            </div>
+
+            <div class="export-section" id="exportSection" style="display: none;">
+                <h3><i class="fas fa-download"></i> Експорт даних</h3>
+                <p>Завантажте повний звіт з усіма показниками</p>
+                <div class="export-buttons">
+                    <button class="export-btn json" id="exportJsonBtn">
+                        <i class="fas fa-file-code"></i> JSON
+                    </button>
+                    <button class="export-btn csv" id="exportCsvBtn">
+                        <i class="fas fa-file-csv"></i> CSV
+                    </button>
+                    <button class="export-btn pdf" id="exportPdfBtn">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <button class="export-btn excel" id="exportExcelBtn">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notificationContainer"></div>
+
+    <script>
+        // ==================== КОНФІГУРАЦІЯ ====================
+        let currentPeriod = 30;
+        let analyticsData = null;
+        let charts = {};
+
+        // ==================== ІНІЦІАЛІЗАЦІЯ ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('📊 Сторінка аналітики завантажена');
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                showLogin();
+                return;
+            }
+            
+            showMainContent();
+            await loadAnalytics();
+            setupEventListeners();
+            setupExportButtons();  
+        });
+
+        function showLogin() {
+            document.getElementById('loginPrompt').style.display = 'block';
+            document.getElementById('analyticsContent').style.display = 'none';
+        }
+
+        function showMainContent() {
+            document.getElementById('loginPrompt').style.display = 'none';
+            document.getElementById('analyticsContent').style.display = 'block';
+        }
+
+        function showLoading(show) {
+            const loader = document.getElementById('loadingIndicator');
+            if (loader) loader.style.display = show ? 'block' : 'none';
+        }
+
+        // ==================== ЗАВАНТАЖЕННЯ ДАНИХ З API ====================
+        async function loadAnalytics() {
+            const token = localStorage.getItem('authToken');
+            console.log('🔄 Завантаження аналітики з сервера...');
+            
+            try {
+                showLoading(true);
+                updateStatus('syncing', 'Завантаження...');
+                
+                // 1. Отримуємо діагностичні дані про повідомлення
+                console.log('📡 Запит: /api/debug/messages');
+                let debugData = null;
+                try {
+                    const debugRes = await fetch(`/api/debug/messages`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (debugRes.ok) {
+                        debugData = await debugRes.json();
+                        console.log('✅ Debug дані:', debugData);
+                    }
+                } catch (e) {
+                    console.warn('Debug API недоступний:', e);
+                }
+                
+                // 2. Отримуємо розширену аналітику
+                console.log(`📡 Запит: /api/analytics/advanced?days=${currentPeriod}`);
+                const advRes = await fetch(`/api/analytics/advanced?days=${currentPeriod}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!advRes.ok) {
+                    throw new Error(`API помилка: ${advRes.status}`);
+                }
+                
+                const data = await advRes.json();
+                console.log('✅ Advanced дані:', data);
+                
+                if (data.success) {
+                    // Синхронізуємо кількість повідомлень з debug API
+                    if (debugData && debugData.success) {
+                        if (!data.summary) data.summary = {};
+                        data.summary.total_messages = debugData.total_messages;
+                        data.summary.user_messages = debugData.by_role?.find(r => r.role === 'user')?.count || 0;
+                        data.summary.bot_messages = debugData.by_role?.find(r => r.role === 'assistant')?.count || 0;
+                        console.log(`📊 Синхронізовано: ${debugData.total_messages} повідомлень`);
+                    }
+                    
+                    // Генеруємо прогнози якщо сервер не надав
+                    if (!data.predictions || Object.keys(data.predictions).length === 0) {
+                        data.predictions = generatePredictions(data);
+                    }
+                    
+                    analyticsData = data;
+                    renderAll(data);
+                    updateStatus('connected', 'Підключено до БД');
+                    document.getElementById('lastSync').textContent = 'Останнє оновлення: ' + new Date().toLocaleString('uk-UA');
+                    document.getElementById('serverCount').textContent = `${data.summary?.total_messages || 0} повідомлень`;
+                } else {
+                    throw new Error(data.message || 'Помилка сервера');
+                }
+                
+            } catch (error) {
+                console.error('❌ Помилка:', error);
+                showNotification('Помилка завантаження: ' + error.message, 'error');
+                updateStatus('disconnected', 'Помилка з\'єднання');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // ==================== ГЕНЕРАЦІЯ ПРОГНОЗІВ ====================
+        function generatePredictions(data) {
+            const daily = data.daily_activity || {};
+            const days = Object.keys(daily).sort();
+            const totalMsgs = data.summary?.total_messages || 0;
+            
+            // Базові прогнози
+            const msgsPerDay = days.length > 0 ? totalMsgs / days.length : 5;
+            const weeklyPrediction = Math.round(msgsPerDay * 7);
+            
+            // Аналіз тренду
+            let trend = 'стабільною ➡️';
+            let confidence = 0.5;
+            
+            if (days.length >= 2) {
+                const mid = Math.floor(days.length / 2);
+                const firstHalf = days.slice(0, mid);
+                const secondHalf = days.slice(mid);
+                
+                const firstCount = firstHalf.reduce((s, d) => s + (daily[d].messages || 0), 0);
+                const secondCount = secondHalf.reduce((s, d) => s + (daily[d].messages || 0), 0);
+                
+                if (secondCount > firstCount * 1.3) {
+                    trend = 'зростанням 📈';
+                    confidence = 0.7;
+                } else if (secondCount < firstCount * 0.7) {
+                    trend = 'зниженням 📉';
+                    confidence = 0.7;
+                } else {
+                    confidence = 0.6 + (days.length * 0.01);
+                }
+            }
+            
+            // Настрій
+            const sentiments = days.map(d => daily[d].sentiment || 0);
+            const avgMood = sentiments.length > 0 ? sentiments.reduce((a, b) => a + b, 0) / sentiments.length : 0;
+            
+            let moodText = 'нейтральним 😐';
+            if (avgMood > 0.3) moodText = 'позитивним 😊';
+            else if (avgMood > 0.1) moodText = 'добрим 🙂';
+            else if (avgMood < -0.3) moodText = 'важким 😢';
+            else if (avgMood < -0.1) moodText = 'пригніченим 😔';
+            
+            // Ризик
+            const criticalRate = totalMsgs > 0 ? (data.summary?.critical_messages || 0) / totalMsgs * 100 : 0;
+            const riskText = criticalRate > 10 ? '⚠️ Підвищений ризик' : 
+                            criticalRate > 5 ? '⚡ Помірний ризик' : '✅ Ризик в нормі';
+            
+            return {
+                messages_next_week: `~${weeklyPrediction} повідомлень (тренд: ${trend})`,
+                sentiment_outlook: `Настрій: ${moodText} (середнє: ${(avgMood * 100).toFixed(0)}%)`,
+                crisis_risk: `${riskText} (${criticalRate.toFixed(1)}% критичних)`,
+                confidence: Math.min(0.9, confidence)
+            };
+        }
+
+        // ==================== РЕНДЕРИНГ ====================
+        function renderAll(data) {
+            console.log('🎨 Рендеринг реальних даних...');
+            
+            const hasData = (data.summary?.total_messages || 0) > 0;
+            
+            if (!hasData) {
+                document.getElementById('noDataState').style.display = 'block';
+                document.getElementById('predictionSection').style.display = 'none';
+                document.getElementById('statsGrid').style.display = 'none';
+                document.getElementById('heatmapCard').style.display = 'none';
+                document.getElementById('chartsRow').style.display = 'none';
+                document.getElementById('trendsCard').style.display = 'none';
+                document.getElementById('recommendationsCard').style.display = 'none';
+                document.getElementById('exportSection').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('noDataState').style.display = 'none';
+            document.getElementById('predictionSection').style.display = 'block';
+            document.getElementById('statsGrid').style.display = 'grid';
+            document.getElementById('heatmapCard').style.display = 'block';
+            document.getElementById('chartsRow').style.display = 'grid';
+            document.getElementById('trendsCard').style.display = 'block';
+            document.getElementById('recommendationsCard').style.display = 'block';
+            document.getElementById('exportSection').style.display = 'block';
+            
+            // Статистика
+            document.getElementById('statTotalMessages').textContent = data.summary?.total_messages || 0;
+            document.getElementById('statUserMessages').textContent = data.summary?.user_messages || 0;
+            document.getElementById('statBotMessages').textContent = data.summary?.bot_messages || 0;
+            document.getElementById('statCritical').textContent = data.summary?.critical_messages || 0;
+            const sentiment = data.summary?.avg_sentiment || 0;
+            document.getElementById('statSentiment').textContent = (sentiment * 100).toFixed(0) + '%';
+            document.getElementById('statDays').textContent = Object.keys(data.daily_activity || {}).length;
+            
+            // Прогнози
+            renderPredictions(data.predictions || {});
+            
+            // Графіки
+            renderCharts(data);
+            
+            // Тренди
+            renderTrends(data);
+            
+            // Рекомендації
+            renderRecommendations(data);
+            
+            // Теплова карта
+            renderHeatmap(data);
+        }
+
+        function renderPredictions(predictions) {
+            const container = document.getElementById('predictionCards');
+            if (!container) return;
+            
+            container.innerHTML = `
+                <div class="prediction-card week">
+                    <div class="prediction-label"><i class="fas fa-calendar-week"></i> Прогноз активності</div>
+                    <div class="prediction-value">${predictions.messages_next_week || 'Аналіз триває...'}</div>
+                    <div class="prediction-confidence">
+                        Надійність: ${(predictions.confidence * 100).toFixed(0)}%
+                        <div class="confidence-bar"><div class="confidence-fill" style="width: ${predictions.confidence * 100}%"></div></div>
+                    </div>
+                </div>
+                <div class="prediction-card tomorrow">
+                    <div class="prediction-label"><i class="fas fa-smile"></i> Прогноз настрою</div>
+                    <div class="prediction-value">${predictions.sentiment_outlook || 'Аналіз триває...'}</div>
+                </div>
+                <div class="prediction-card risk">
+                    <div class="prediction-label"><i class="fas fa-shield-alt"></i> Оцінка ризику</div>
+                    <div class="prediction-value">${predictions.crisis_risk || 'Н/Д'}</div>
+                </div>
+            `;
+            
+            const factors = document.getElementById('factorList');
+            if (factors) {
+                const daysCount = analyticsData?.daily_activity ? Object.keys(analyticsData.daily_activity).length : 0;
+                factors.innerHTML = `
+                    <div class="factor-tag neutral"><i class="fas fa-database"></i> Реальні дані з БД: ${analyticsData?.summary?.total_messages || 0} повідомлень</div>
+                    <div class="factor-tag neutral"><i class="fas fa-calendar"></i> Період: ${daysCount} днів</div>
+                    <div class="factor-tag ${(analyticsData?.summary?.avg_sentiment || 0) > 0 ? 'positive' : 'negative'}">
+                        <i class="fas ${(analyticsData?.summary?.avg_sentiment || 0) > 0 ? 'fa-smile' : 'fa-frown'}"></i>
+                        Загальний настрій: ${((analyticsData?.summary?.avg_sentiment || 0) * 100).toFixed(0)}%
+                    </div>
+                `;
+            }
+            
+            renderPredictionChart(analyticsData?.daily_activity || {});
+        }
+
+        function renderPredictionChart(dailyActivity) {
+            const ctx = document.getElementById('predictionChart')?.getContext('2d');
+            if (!ctx) return;
+            if (charts.prediction) charts.prediction.destroy();
+            
+            const days = Object.keys(dailyActivity).sort();
+            if (days.length === 0) {
+                charts.prediction = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: ['Немає даних'], datasets: [{ data: [0], borderColor: '#ccc' }] },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+                return;
+            }
+            
+            const labels = days.map(d => {
+                const date = new Date(d);
+                return `${date.getDate()}.${date.getMonth() + 1}`;
+            });
+            const values = days.map(d => dailyActivity[d].messages || 0);
+            
+            const avg = values.reduce((a, b) => a + b, 0) / values.length;
+            labels.push('Прогноз');
+            values.push(Math.round(avg));
+            
+            charts.prediction = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Повідомлення',
+                        data: values,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: [...Array(days.length).fill('#3498db'), '#e74c3c'],
+                        pointRadius: [...Array(days.length).fill(4), 6]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: (ctx) => `${ctx.dataIndex >= days.length ? '🔮 Прогноз' : '📊 Факт'}: ${ctx.raw} повідомлень` } }
+                    }
+                }
+            });
+        }
+
+        function renderCharts(data) {
+            // Графік трендів
+            const trendsCtx = document.getElementById('trendsChart')?.getContext('2d');
+            if (trendsCtx) {
+                if (charts.trends) charts.trends.destroy();
+                
+                const days = Object.keys(data.daily_activity || {}).sort();
+                const labels = days.map(d => {
+                    const date = new Date(d);
+                    return `${date.getDate()}.${date.getMonth() + 1}`;
+                });
+                const values = days.map(d => data.daily_activity[d].messages || 0);
+                const sentiments = days.map(d => data.daily_activity[d].sentiment || 0);
+                
+                charts.trends = new Chart(trendsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels.length ? labels : ['Немає даних'],
+                        datasets: [
+                            {
+                                label: 'Повідомлення',
+                                data: values.length ? values : [0],
+                                borderColor: '#3498db',
+                                backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                                fill: true,
+                                tension: 0.4,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Настрій',
+                                data: sentiments.length ? sentiments : [0],
+                                borderColor: '#f39c12',
+                                backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                                fill: true,
+                                tension: 0.4,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { type: 'linear', position: 'left', title: { display: true, text: 'Кількість повідомлень' } },
+                            y1: { type: 'linear', position: 'right', min: -1, max: 1, grid: { drawOnChartArea: false }, title: { display: true, text: 'Настрій' } }
+                        }
+                    }
+                });
+            }
+            
+            // Графік тем
+            const topicsCtx = document.getElementById('topicsChart')?.getContext('2d');
+            if (topicsCtx && data.categories && Object.keys(data.categories).length > 0) {
+                if (charts.topics) charts.topics.destroy();
+                
+                const catNames = {
+                    anxiety: 'Тривога', depression: 'Депресія', stress: 'Стрес',
+                    relationships: 'Відносини', work_study: 'Робота/Навчання',
+                    positive: 'Позитив', general: 'Загальне'
+                };
+                
+                const cats = Object.entries(data.categories).sort((a, b) => b[1] - a[1]).slice(0, 6);
+                
+                charts.topics = new Chart(topicsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: cats.map(c => catNames[c[0]] || c[0]),
+                        datasets: [{
+                            label: 'Кількість згадувань',
+                            data: cats.map(c => c[1]),
+                            backgroundColor: ['#3498db', '#2ecc71', '#9b59b6', '#f39c12', '#e74c3c', '#1abc9c']
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            }
+        }
+
+        function renderTrends(data) {
+            const container = document.getElementById('trendsContainer');
+            if (!container) return;
+            
+            const daily = data.daily_activity || {};
+            const days = Object.keys(daily).sort();
+            
+            if (days.length < 2) {
+                container.innerHTML = '<div class="insight-item">Недостатньо даних для аналізу трендів</div>';
+                return;
+            }
+            
+            const mid = Math.floor(days.length / 2);
+            const firstHalf = days.slice(0, mid);
+            const secondHalf = days.slice(mid);
+            
+            const firstMsgs = firstHalf.reduce((s, d) => s + (daily[d].messages || 0), 0);
+            const secondMsgs = secondHalf.reduce((s, d) => s + (daily[d].messages || 0), 0);
+            const msgChange = firstMsgs > 0 ? ((secondMsgs - firstMsgs) / firstMsgs * 100).toFixed(1) : 0;
+            
+            const firstSent = firstHalf.reduce((s, d) => s + (daily[d].sentiment || 0), 0) / firstHalf.length;
+            const secondSent = secondHalf.reduce((s, d) => s + (daily[d].sentiment || 0), 0) / secondHalf.length;
+            const sentChange = (secondSent - firstSent) * 100;
+            
+            const criticalCount = Object.values(daily).reduce((s, d) => s + (d.critical || 0), 0);
+            const totalMsg = Object.values(daily).reduce((s, d) => s + (d.messages || 0), 0);
+            const crisisRate = totalMsg > 0 ? (criticalCount / totalMsg * 100).toFixed(1) : 0;
+            
+            container.innerHTML = `
+                <div class="insight-item">
+                    <strong>📊 Активність:</strong>
+                    <p>${msgChange > 0 ? '📈 Зростає' : msgChange < 0 ? '📉 Спадає' : '➡️ Стабільна'} (${msgChange > 0 ? '+' : ''}${msgChange}%)</p>
+                </div>
+                <div class="insight-item">
+                    <strong>😊 Настрій:</strong>
+                    <p>${sentChange > 5 ? '😊 Покращується' : sentChange < -5 ? '😟 Погіршується' : '😐 Стабільний'} (${sentChange > 0 ? '+' : ''}${sentChange.toFixed(1)}%)</p>
+                </div>
+                <div class="insight-item">
+                    <strong>⚠️ Критичні ситуації:</strong>
+                    <p>${crisisRate > 15 ? '🔴 Високий ризик' : crisisRate > 5 ? '🟡 Помірний ризик' : '🟢 Низький ризик'} (${crisisRate}% від усіх повідомлень)</p>
+                </div>
+            `;
+        }
+
+        function renderRecommendations(data) {
+            const container = document.getElementById('recommendationsList');
+            if (!container) return;
+            
+            const total = data.summary?.total_messages || 0;
+            const critical = data.summary?.critical_messages || 0;
+            const mood = data.summary?.avg_sentiment || 0;
+            
+            const recs = [];
+            
+            if (critical > 5) {
+                recs.push({
+                    type: 'crisis',
+                    icon: '🚨',
+                    title: 'Зверніть увагу на критичні ситуації',
+                    text: 'Ви маєте підвищену кількість кризових моментів. Рекомендуємо звернутися до фахівця.'
+                });
+            }
+            
+            if (mood < -0.2) {
+                recs.push({
+                    type: 'clinical',
+                    icon: '😔',
+                    title: 'Пригнічений настрій',
+                    text: 'Ваш середній настрій нижче норми. Спробуйте техніки релаксації та більше відпочивайте.'
+                });
+            }
+            
+            if (total < 10) {
+                recs.push({
+                    type: 'behavioral',
+                    icon: '💬',
+                    title: 'Почніть активніше спілкуватися',
+                    text: 'Більше повідомлень = точніші прогнози. Не соромтеся ділитися своїми думками.'
+                });
+            }
+            
+            if (recs.length === 0) {
+                recs.push({
+                    type: 'behavioral',
+                    icon: '✅',
+                    title: 'Все добре!',
+                    text: 'Продовжуйте в тому ж дусі. Ваші показники в нормі.'
+                });
+            }
+            
+            container.innerHTML = recs.map(r => `
+                <div class="recommendation-card ${r.type}">
+                    <div class="recommendation-header">
+                        <span class="recommendation-icon">${r.icon}</span>
+                        <h4>${r.title}</h4>
+                    </div>
+                    <p>${r.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderHeatmap(data) {
+            const container = document.getElementById('heatmapContainer');
+            if (!container) return;
+            
+            const hourly = data.hourly_activity || {};
+            const hours = [];
+            
+            for (let i = 0; i < 24; i++) {
+                const hour = `${i.toString().padStart(2, '0')}:00`;
+                hours.push({ hour: hour, count: hourly[hour] || 0 });
+            }
+            
+            const maxCount = Math.max(...hours.map(h => h.count), 1);
+            
+            container.innerHTML = hours.map(h => {
+                const intensity = h.count / maxCount;
+                let color;
+                if (intensity > 0.7) color = '#e74c3c';
+                else if (intensity > 0.4) color = '#f39c12';
+                else if (intensity > 0.1) color = '#2ecc71';
+                else color = '#bdc3c7';
+                
+                return `
+                    <div class="heatmap-cell" style="background: ${color}; color: white" title="${h.hour}: ${h.count} повідомлень">
+                        <span style="font-weight: 600;">${h.hour}</span>
+                        <span style="font-size: 10px;">${h.count}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== ДОПОМІЖНІ ФУНКЦІЇ ====================
+        function updateStatus(status, text) {
+            const el = document.getElementById('connectionStatus');
+            if (!el) return;
+            el.className = `connection-status ${status}`;
+            el.innerHTML = `<span class="status-dot"></span>${text}`;
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentPeriod = parseInt(e.target.dataset.days);
+                    await loadAnalytics();
+                });
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            // Використовуємо toast якщо є, або alert
+            if (typeof showToast === 'function') {
+                showToast(message, type);
+            } else {
+                console.log(`${type}: ${message}`);
+                // Просте сповіщення
+                const toast = document.createElement('div');
+                toast.textContent = message;
+                toast.style.cssText = `
+                    position: fixed; bottom: 20px; right: 20px; padding: 12px 20px;
+                    background: ${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : '#3498db'};
+                    color: white; border-radius: 8px; z-index: 10000;
+                    animation: fadeInOut 3s ease;
+                `;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+        }
+
+
+    // ==================== ЕКСПОРТ ДАНИХ (РОБОЧА ВЕРСІЯ) ====================
+
+        // Перевірка завантаження html2pdf
+        let html2pdfLoaded = false;
+
+        async function ensureHtml2Pdf() {
+            if (html2pdfLoaded) return true;
+            if (typeof html2pdf !== 'undefined') {
+                html2pdfLoaded = true;
+                return true;
+            }
+            
+            // Чекаємо завантаження
+            return new Promise((resolve) => {
+                const checkInterval = setInterval(() => {
+                    if (typeof html2pdf !== 'undefined') {
+                        html2pdfLoaded = true;
+                        clearInterval(checkInterval);
+                        resolve(true);
+                    }
+                }, 100);
+                
+                setTimeout(() => {
+                    clearInterval(checkInterval);
+                    resolve(false);
+                }, 5000);
+            });
+        }
+
+        function setupExportButtons() {
+            console.log('🔧 Налаштування кнопок експорту...');
+            
+            const exportJson = document.getElementById('exportJsonBtn');
+            const exportCsv = document.getElementById('exportCsvBtn');
+            const exportPdf = document.getElementById('exportPdfBtn');
+            const exportExcel = document.getElementById('exportExcelBtn');
+            
+            if (exportJson) exportJson.addEventListener('click', () => exportToJSON());
+            if (exportCsv) exportCsv.addEventListener('click', () => exportToCSV());
+            if (exportPdf) exportPdf.addEventListener('click', () => exportToPDF());
+            if (exportExcel) exportExcel.addEventListener('click', () => exportToExcel());
+        }
+
+        function exportToJSON() {
+            if (!analyticsData) {
+                showNotification('❌ Немає даних для експорту', 'error');
+                return;
+            }
+            
+            const now = new Date();
+            const timestamp = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}`;
+            const filename = `safeplace_analytics_${timestamp}.json`;
+            
+            const exportData = {
+                metadata: {
+                    exportDate: now.toISOString(),
+                    source: 'SafePlace',
+                    period: '30 днів'
+                },
+                summary: analyticsData.summary || {},
+                daily_stats: analyticsData.daily_activity || {},
+                categories: analyticsData.categories || {},
+                predictions: analyticsData.predictions || {}
+            };
+            
+            const jsonStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            downloadFile(blob, filename);
+            showNotification('✅ JSON експортовано', 'success');
+        }
+
+        function exportToCSV() {
+            if (!analyticsData) {
+                showNotification('❌ Немає даних для експорту', 'error');
+                return;
+            }
+            
+            const now = new Date();
+            const timestamp = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+            const filename = `safeplace_analytics_${timestamp}.csv`;
+            
+            let csvRows = [['Дата', 'Повідомлень', 'Критичних', 'Настрій (%)']];
+            
+            const daily = analyticsData.daily_activity || {};
+            const dates = Object.keys(daily).sort().reverse();
+            
+            for (const date of dates) {
+                const dayData = daily[date];
+                const sentimentPercent = ((dayData.sentiment || 0) * 100).toFixed(0);
+                csvRows.push([date, dayData.messages || 0, dayData.critical || 0, sentimentPercent + '%']);
+            }
+            
+            const csvContent = csvRows.map(row => row.join(',')).join('\n');
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            downloadFile(blob, filename);
+            showNotification('✅ CSV експортовано', 'success');
+        }
+
+        // ==================== PDF ЕКСПОРТ (РОБОЧА ВЕРСІЯ) ====================
+        // ==================== НАЙПРОСТІШИЙ PDF ЕКСПОРТ ====================
+
+async function exportToPDF() {
+    if (!analyticsData) {
+        showNotification('❌ Немає даних для експорту', 'error');
+        return;
+    }
+    
+    showNotification('📄 Підготовка звіту...', 'info');
+    
+    // Створюємо тимчасове вікно для друку
+    const printWindow = window.open('', '_blank');
+    
+    const daily = analyticsData.daily_activity || {};
+    const last30Days = Object.keys(daily).sort().reverse().slice(0, 30);
+    
+    // Форматуємо дати
+    const formatDate = (date) => {
+        const d = new Date(date);
+        return d.toLocaleDateString('uk-UA');
+    };
+    
+    // Отримуємо назви категорій
+    const getCategoryName = (cat) => {
+        const names = {
+            'anxiety': 'Тривога', 'depression': 'Депресія', 'stress': 'Стрес',
+            'relationships': 'Відносини', 'work_study': 'Робота/Навчання',
+            'self_esteem': 'Самооцінка', 'sleep': 'Сон', 'health': 'Здоров\'я'
+        };
+        return names[cat] || cat;
+    };
+    
+    // Генеруємо HTML для друку
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>SafePlace - Аналітичний звіт</title>
+            <style>
+                body {
+                    font-family: 'Segoe UI', Arial, sans-serif;
+                    padding: 40px;
+                    margin: 0;
+                    color: #333;
+                }
+                @media print {
+                    body { padding: 20px; }
+                    .page-break { page-break-before: always; }
+                    button { display: none; }
+                }
+                .header {
+                    text-align: center;
+                    margin-bottom: 30px;
+                    padding-bottom: 20px;
+                    border-bottom: 3px solid #667eea;
+                }
+                .header h1 { color: #667eea; margin: 0; }
+                .header p { color: #666; margin: 5px 0 0; }
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 15px;
+                    margin-bottom: 30px;
+                }
+                .stat-card {
+                    background: #f8f9fa;
+                    padding: 15px;
+                    border-radius: 10px;
+                    text-align: center;
+                    border: 1px solid #dee2e6;
+                }
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: bold;
+                    color: #667eea;
+                }
+                .stat-label {
+                    font-size: 12px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }
+                th, td {
+                    border: 1px solid #dee2e6;
+                    padding: 10px;
+                    text-align: left;
+                }
+                th {
+                    background: #667eea;
+                    color: white;
+                }
+                h2 {
+                    color: #667eea;
+                    margin-top: 30px;
+                    margin-bottom: 15px;
+                    font-size: 18px;
+                }
+                .footer {
+                    text-align: center;
+                    margin-top: 50px;
+                    padding-top: 20px;
+                    border-top: 1px solid #dee2e6;
+                    font-size: 12px;
+                    color: #999;
+                }
+                .predictions-box {
+                    background: #f0f4ff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    margin: 20px 0;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>📊 SafePlace - Аналітичний звіт</h1>
+                <p>Дата генерації: ${new Date().toLocaleString('uk-UA')}</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">${analyticsData.summary?.total_messages || 0}</div>
+                    <div class="stat-label">Всього повідомлень</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${analyticsData.summary?.critical_messages || 0}</div>
+                    <div class="stat-label">Критичних</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${((analyticsData.summary?.avg_sentiment || 0) * 100).toFixed(0)}%</div>
+                    <div class="stat-label">Середній настрій</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Object.keys(daily).length}</div>
+                    <div class="stat-label">Днів активності</div>
+                </div>
+            </div>
+            
+            <h2>📅 Денна активність</h2>
+            <table>
+                <thead>
+                    <tr><th>Дата</th><th>Повідомлень</th><th>Критичних</th><th>Настрій</th></tr>
+                </thead>
+                <tbody>
+                    ${last30Days.map(date => {
+                        const d = daily[date];
+                        if (!d) return '';
+                        return `<tr>
+                            <td>${formatDate(date)}</td>
+                            <td>${d.messages || 0}</td>
+                            <td>${d.critical || 0}</td>
+                            <td>${((d.sentiment || 0) * 100).toFixed(0)}%</td>
+                        </tr>`;
+                    }).join('')}
+                </tbody>
+            </table>
+            
+            <div class="predictions-box">
+                <h2 style="margin-top: 0;">🔮 AI Прогнози</h2>
+                <p><strong>Прогноз активності:</strong> ${analyticsData.predictions?.messages_next_week || 'Немає даних'}</p>
+                <p><strong>Прогноз настрою:</strong> ${analyticsData.predictions?.sentiment_outlook || 'Немає даних'}</p>
+                ${analyticsData.predictions?.crisis_assessment ? `<p><strong>Оцінка ризику:</strong> ${analyticsData.predictions.crisis_assessment}</p>` : ''}
+            </div>
+            
+            <h2>🏷️ Теми розмов</h2>
+            <table>
+                <thead><tr><th>Категорія</th><th>Кількість</th></tr></thead>
+                <tbody>
+                    ${Object.entries(analyticsData.categories || {})
+                        .sort((a,b) => b[1] - a[1])
+                        .slice(0, 8)
+                        .map(([cat, count]) => `<tr><td>${getCategoryName(cat)}</td><td>${count}</td></tr>`)
+                        .join('')}
+                </tbody>
+            </table>
+            
+            <div class="footer">
+                <p>Згенеровано SafePlace - Платформа психологічної підтримки</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button onclick="window.print(); setTimeout(() => window.close(), 1000);" 
+                        style="background: #667eea; color: white; border: none; padding: 12px 30px; 
+                               border-radius: 8px; font-size: 16px; cursor: pointer;">
+                    🖨️ Зберегти як PDF
+                </button>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    // Записуємо HTML в нове вікно
+    printWindow.document.write(html);
+    printWindow.document.close();
+    
+    showNotification('✅ Звіт відкрито. Натисніть "Зберегти як PDF"', 'success');
+}
+    </script>
+    <script>
+    // Просто викликаємо налаштування кнопок після завантаження
+    setTimeout(function() {
+        if (typeof setupExportButtons === 'function') {
+            setupExportButtons();
+        } else if (typeof exportToPDF === 'function') {
+            // Якщо setupExportButtons немає, налаштовуємо вручну
+            const pdfBtn = document.getElementById('exportPdfBtn');
+            if (pdfBtn) {
+                pdfBtn.onclick = function() { exportToPDF(); };
+            }
+            const jsonBtn = document.getElementById('exportJsonBtn');
+            if (jsonBtn) {
+                jsonBtn.onclick = function() { exportToJSON(); };
+            }
+            const csvBtn = document.getElementById('exportCsvBtn');
+            if (csvBtn) {
+                csvBtn.onclick = function() { exportToCSV(); };
+            }
+            const excelBtn = document.getElementById('exportExcelBtn');
+            if (excelBtn) {
+                excelBtn.onclick = function() { exportToExcel(); };
+            }
+            console.log('✅ Кнопки налаштовані вручну');
+        }
+    }, 500);
+</script>
+<script>
+// ==================== ФУНКЦІЇ ДЛЯ ЗАВАНТАЖЕННЯ ФАЙЛІВ ====================
+
+function downloadFile(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+}
+
+function showNotification(message, type) {
+    const colors = { success: '#2ecc71', error: '#e74c3c', info: '#3498db' };
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed; bottom: 20px; right: 20px; padding: 12px 20px;
+        background: ${colors[type] || colors.info}; color: white;
+        border-radius: 8px; z-index: 10000; font-size: 14px;
+        animation: slideIn 0.3s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// ==================== ОТРИМАННЯ ДАНИХ ====================
+
+function getExportData() {
+    // Перевіряємо глобальну змінну
+    if (window.analyticsData && window.analyticsData.summary) {
+        return window.analyticsData;
+    }
+    // Перевіряємо analyticsData
+    if (typeof analyticsData !== 'undefined' && analyticsData && analyticsData.summary) {
+        window.analyticsData = analyticsData;
+        return analyticsData;
+    }
+    return null;
+}
+
+// ==================== ФУНКЦІЇ ЕКСПОРТУ ====================
+
+function exportToJSON() {
+    const data = getExportData();
+    if (!data) {
+        showNotification('❌ Дані ще завантажуються. Зачекайте...', 'error');
+        return;
+    }
+    
+    const now = new Date();
+    const timestamp = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}`;
+    const filename = `safeplace_analytics_${timestamp}.json`;
+    
+    const exportData = {
+        metadata: { exportDate: now.toISOString(), source: 'SafePlace' },
+        summary: data.summary || {},
+        daily_stats: data.daily_activity || {},
+        categories: data.categories || {},
+        predictions: data.predictions || {}
+    };
+    
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    downloadFile(blob, filename);
+    showNotification('✅ JSON експортовано', 'success');
+}
+
+function exportToCSV() {
+    const data = getExportData();
+    if (!data) {
+        showNotification('❌ Дані ще завантажуються. Зачекайте...', 'error');
+        return;
+    }
+    
+    const now = new Date();
+    const filename = `safeplace_analytics_${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}.csv`;
+    
+    let csvRows = [['Дата', 'Повідомлень', 'Критичних', 'Настрій (%)']];
+    const daily = data.daily_activity || {};
+    
+    for (const [date, dayData] of Object.entries(daily).sort().reverse()) {
+        csvRows.push([date, dayData.messages || 0, dayData.critical || 0, ((dayData.sentiment || 0) * 100).toFixed(0) + '%']);
+    }
+    
+    const blob = new Blob(['\uFEFF' + csvRows.map(row => row.join(',')).join('\n')], { type: 'text/csv;charset=utf-8;' });
+    downloadFile(blob, filename);
+    showNotification('✅ CSV експортовано', 'success');
+}
+
+function exportToExcel() {
+    const data = getExportData();
+    if (!data) {
+        showNotification('❌ Дані ще завантажуються. Зачекайте...', 'error');
+        return;
+    }
+    
+    const now = new Date();
+    const filename = `safeplace_analytics_${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}.xls`;
+    
+    const daily = data.daily_activity || {};
+    let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SafePlace Report</title></head><body>
+        <h1>SafePlace - Аналітичний звіт</h1>
+        <p>Дата: ${new Date().toLocaleString('uk-UA')}</p>
+        <h2>Загальна статистика</h2>
+        <table border="1"><tr><th>Показник</th><th>Значення</th>`
+        + `<tr><td>Всього повідомлень</td><td><b>${data.summary?.total_messages || 0}</b></td></tr>`
+        + `<tr><td>Критичних</td><td><b>${data.summary?.critical_messages || 0}</b></td></tr>`
+        + `<tr><td>Середній настрій</td><td><b>${((data.summary?.avg_sentiment || 0) * 100).toFixed(0)}%</b></td></tr>`
+        + `<tr><td>Днів активності</td><td><b>${Object.keys(daily).length}</b></td></tr>`
+        + `</table>
+        <h2>Денна активність</h2>
+        <table border="1"><thead><tr><th>Дата</th><th>Повідомлень</th><th>Критичних</th><th>Настрій</th></tr></thead><tbody>`;
+    
+    for (const [date, d] of Object.entries(daily).sort().reverse().slice(0, 30)) {
+        html += `<tr><td>${date}</td><td>${d.messages || 0}</td><td>${d.critical || 0}</td><td>${((d.sentiment || 0) * 100).toFixed(0)}%</td></tr>`;
+    }
+    
+    html += `</tbody></table></body></html>`;
+    
+    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+    downloadFile(blob, filename);
+    showNotification('✅ Excel файл завантажено', 'success');
+}
+
+function exportToPDF() {
+    const data = getExportData();
+    if (!data) {
+        showNotification('❌ Дані ще завантажуються. Зачекайте...', 'error');
+        return;
+    }
+    
+    showNotification('📄 Підготовка звіту...', 'info');
+    
+    const printWindow = window.open('', '_blank');
+    const daily = data.daily_activity || {};
+    const last30Days = Object.keys(daily).sort().reverse().slice(0, 30);
+    
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SafePlace Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; margin: 0; }
+        @media print { button { display: none; } }
+        .header { text-align: center; border-bottom: 3px solid #667eea; margin-bottom: 30px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 15px; margin: 20px 0; }
+        .stat-card { background: #f8f9fa; padding: 15px; text-align: center; border: 1px solid #dee2e6; border-radius: 10px; }
+        .stat-value { font-size: 28px; font-weight: bold; color: #667eea; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #dee2e6; padding: 10px; text-align: left; }
+        th { background: #667eea; color: white; }
+        h2 { color: #667eea; }
+    </style>
+    </head><body>
+        <div class="header"><h1>📊 SafePlace - Аналітичний звіт</h1><p>${new Date().toLocaleString('uk-UA')}</p></div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-value">${data.summary?.total_messages || 0}</div><div>Всього повідомлень</div></div>
+            <div class="stat-card"><div class="stat-value">${data.summary?.critical_messages || 0}</div><div>Критичних</div></div>
+            <div class="stat-card"><div class="stat-value">${((data.summary?.avg_sentiment || 0) * 100).toFixed(0)}%</div><div>Середній настрій</div></div>
+            <div class="stat-card"><div class="stat-value">${Object.keys(daily).length}</div><div>Днів активності</div></div>
+        </div>
+        <h2>📅 Денна активність</h2>
+        <table><thead><tr><th>Дата</th><th>Повідомлень</th><th>Критичних</th><th>Настрій</th></tr></thead><tbody>
+        ${last30Days.map(date => {
+            const d = daily[date];
+            return d ? `<tr><td>${new Date(date).toLocaleDateString('uk-UA')}</td><td>${d.messages || 0}</td><td>${d.critical || 0}</td><td>${((d.sentiment || 0) * 100).toFixed(0)}%</td></tr>` : '';
+        }).join('')}
+        </tbody></table>
+        <div style="text-align:center; margin-top:30px;"><button onclick="window.print();setTimeout(()=>window.close(),1000);" style="background:#667eea;color:white;border:none;padding:12px 30px;border-radius:8px;cursor:pointer;">🖨️ Зберегти як PDF</button></div>
+        <div style="text-align:center; margin-top:20px; font-size:12px; color:#999;">Згенеровано SafePlace</div>
+    </body></html>`;
+    
+    printWindow.document.write(html);
+    printWindow.document.close();
+    showNotification('✅ Звіт відкрито. Натисніть "Зберегти як PDF"', 'success');
+}
+
+// ==================== НАЛАШТУВАННЯ КНОПОК ====================
+function setupExportButtons() {
+    console.log('🔧 Налаштування кнопок експорту...');
+    
+    const jsonBtn = document.getElementById('exportJsonBtn');
+    const csvBtn = document.getElementById('exportCsvBtn');
+    const pdfBtn = document.getElementById('exportPdfBtn');
+    const excelBtn = document.getElementById('exportExcelBtn');
+    
+    if (jsonBtn) {
+        jsonBtn.onclick = function(e) { e.preventDefault(); exportToJSON(); };
+        console.log('✅ JSON кнопка налаштована');
+    }
+    if (csvBtn) {
+        csvBtn.onclick = function(e) { e.preventDefault(); exportToCSV(); };
+        console.log('✅ CSV кнопка налаштована');
+    }
+    if (pdfBtn) {
+        pdfBtn.onclick = function(e) { e.preventDefault(); exportToPDF(); };
+        console.log('✅ PDF кнопка налаштована');
+    }
+    if (excelBtn) {
+        excelBtn.onclick = function(e) { e.preventDefault(); exportToExcel(); };
+        console.log('✅ Excel кнопка налаштована');
+    }
+}
+
+// Чекаємо поки дані завантажаться
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        // Чекаємо ще трохи для завантаження даних
+        setTimeout(setupExportButtons, 2000);
+    });
+} else {
+    setTimeout(setupExportButtons, 2000);
+}
+
+// Також слухаємо подію завантаження даних
+window.addEventListener('load', function() {
+    setTimeout(setupExportButtons, 1000);
+});
+</script>
+</body>
+</html>

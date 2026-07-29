@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>AI-чат психологічної підтримки | Поговоріть анонімно | Safe Place</title>
+  <meta name="description" content="Безкоштовний AI-чат психологічної підтримки 24/7. Анонімні розмови, емоційна допомога, техніки самодопомоги.">
+  <link rel="canonical" href="https://kateryna-havryliuk.github.io/SafePlace_new_SEO/chat.html">
+  
+  <!-- Schema.org розмітка -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Safe Place AI Chat",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "UAH"
+    },
+    "description": "AI-чат для психологічної підтримки та емоційної допомоги",
+    "url": "https://kateryna-havryliuk.github.io/SafePlace_new_SEO/chat.html",
+    "featureList": "Анонімні розмови, Техніки самодопомоги, Екстрена допомога, Аналітика настрою"
+  }
+  </script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/chat.css">
+  <link rel="stylesheet" href="css/multimodal.css">
+
+<style>
+  /* Додаткові стилі для бейджів NEW та SOON */
+    .tool-btn {
+      position: relative;
+    }
+    
+    .badge-new, .badge-soon {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 20px;
+    }
+    
+    .badge-new {
+      background: linear-gradient(135deg, #00b4db, #0083b0);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0, 180, 219, 0.3);
+    }
+    
+    .badge-soon {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: white;
+      box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+    
+    /* Анімація для нових функцій */
+    .new-feature-glow {
+      animation: glowPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes glowPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(0, 180, 219, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 0 8px rgba(0, 180, 219, 0);
+      }
+    }
+    
+    /* Стилі для модального вікна "Soon" */
+    .soon-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .soon-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .soon-modal {
+      background: var(--card-bg, white);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .soon-modal-overlay.active .soon-modal {
+      transform: scale(1);
+    }
+    
+    .soon-modal-icon {
+      font-size: 60px;
+      color: #f39c12;
+      margin-bottom: 20px;
+    }
+    
+    .soon-modal h3 {
+      font-size: 28px;
+      margin-bottom: 15px;
+      color: var(--text-color, #333);
+    }
+    
+    .soon-modal p {
+      color: var(--text-secondary, #666);
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+    
+    .soon-modal .progress-bar {
+      background: #e0e0e0;
+      border-radius: 10px;
+      height: 8px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    
+    .soon-modal .progress-fill {
+      background: linear-gradient(90deg, #f39c12, #e67e22);
+      width: 65%;
+      height: 100%;
+      border-radius: 10px;
+      animation: fillProgress 2s ease-out;
+    }
+    
+    @keyframes fillProgress {
+      from {
+        width: 0;
+      }
+      to {
+        width: 65%;
+      }
+    }
+    
+    .soon-modal .btn-close-soon {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    
+    .soon-modal .btn-close-soon:hover {
+      transform: scale(1.05);
+    }
+    
+    /* Стилі для індикатора запису голосу */
+    .voice-recording-indicator {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 1000;
+      font-size: 14px;
+      animation: slideUp 0.3s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        transform: translateX(-50%) translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .recording-dot {
+      width: 12px;
+      height: 12px;
+      background: #e74c3c;
+      border-radius: 50%;
+      animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.3;
+      }
+    }
+    
+    /* Адаптивність для мобільних */
+    @media (max-width: 768px) {
+      .badge-new, .badge-soon {
+        font-size: 8px;
+        padding: 2px 4px;
+        top: -6px;
+        right: -6px;
+      }
+      
+      .soon-modal h3 {
+        font-size: 24px;
+      }
+      
+      .soon-modal-icon {
+        font-size: 50px;
+      }
+    }
+</style>
+</head>
+<body>
+  <!-- Кнопка для відкриття сайдбару на мобільних -->
+  <button class="menu-toggle-btn" id="menuToggleBtn">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <!-- Оверлей для мобільного сайдбару -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  
+  <div class="chat-container">
+    <!-- Sidebar для зареєстрованих користувачів -->
+    <div class="sidebar" id="sidebar" style="display: none;">
+      <!-- Кнопка сховати сайдбар (тільки для десктопа) -->
+      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Сховати панель">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      
+      <div class="sidebar-header">
+        <div class="user-info">
+          <div class="user-avatar" id="userAvatar">U</div>
+          <div class="user-details">
+            <h3 id="userName">Користувач</h3>
+            <p id="userEmail">email@example.com</p>
+          </div>
+        </div>
+        <button class="new-chat-btn" id="newChatBtn">
+          <i class="fas fa-plus"></i> Новий чат
+        </button>
+        <!-- Поле пошуку чатів -->
+        <div class="search-chats">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchChatsInput" placeholder="Пошук чатів..." autocomplete="off">
+            <button id="clearSearchBtn" class="clear-search" style="display: none;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+      </div>
+      
+      <div class="chats-list" id="chatsList">
+        <!-- Список чатів буде додаватись тут -->
+      </div>
+      
+      <div class="analytics-section">
+        <h4>
+            <i class="fas fa-chart-line"></i>
+            Ваша аналітика
+        </h4>
+        
+        <div id="quickInsights">
+            <!-- Статистика буде додаватись динамічно -->
+            <div class="insight-card">
+                <div class="insight-header">
+                    <span class="insight-title">Емоційний тренд</span>
+                    <span class="trend-badge improving">
+                        <i class="fas fa-arrow-up"></i> Покращення
+                    </span>
+                </div>
+            </div>
+            
+            <div class="categories-list">
+                <span class="category-tag">
+                    <i class="fas fa-brain"></i> Аналіз...
+                </span>
+            </div>
+            
+            <div class="message-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="statMessages">0</span>
+                    <span class="stat-label">Повідомлень</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="statCritical">0</span>
+                    <span class="stat-label">Критичних</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="statSentiment">0</span>
+                    <span class="stat-label">Настрій</span>
+                </div>
+            </div>
+        </div>
+        
+        <button class="analytics-btn" onclick="window.open('analytics.html', '_blank')">
+            <i class="fas fa-chart-simple"></i> Детальніша аналітика
+            <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+    </div>
+    
+    <!-- Основна область чату -->
+    <div class="chat-main">
+      <div class="chat-header">
+        <!-- Кнопка показу сайдбару (коли він схований) -->
+        <button class="show-sidebar-btn" id="showSidebarBtn" style="display: none;" title="Показати панель">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <h1><i class="fas fa-heart"></i> SafePlace</h1>
+        <p><span class="status-indicator"></span>Простір для емоційної підтримки та розмов по душі</p>
+        <div class="chat-controls">
+          <button class="clear-chat-btn" id="clearChatBtn" title="Очистити чат">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Панель мультимодальних інструментів з бейджами NEW та SOON -->
+      <div class="multimodal-toolbar">
+        <!-- Голосовий ввід - NEW -->
+        <button class="tool-btn" id="voiceInputBtn" title="Голосовий ввід - Нова функція!">
+          <i class="fas fa-microphone"></i>
+          <span class="tooltip">Натисніть і говоріть</span>
+          <span class="badge-new">NEW</span>
+        </button>
+        
+        <!-- Відео/фото - SOON (скоро) -->
+        <button class="tool-btn" id="videoInputBtn" title="Відео/фото - Скоро!">
+          <i class="fas fa-camera"></i>
+          <span class="tooltip">Увімкнути камеру (Скоро)</span>
+          <span class="badge-soon">SOON</span>
+        </button>
+        
+        <!-- Поширення екрану - NEW -->
+        <button class="tool-btn" id="screenShareBtn" title="Поділитися екраном - Нова функція!">
+          <i class="fas fa-desktop"></i>
+          <span class="tooltip">Поділитися екраном</span>
+          <span class="badge-new">NEW</span>
+        </button>
+        
+        <!-- Аналіз емоцій - NEW -->
+        <button class="tool-btn" id="emotionAnalysisBtn" title="Аналіз емоцій - Нова функція!">
+          <i class="fas fa-smile"></i>
+          <span class="tooltip">Показати аналіз емоцій</span>
+          <span class="badge-new">NEW</span>
+        </button>
+        
+        <div class="tool-divider"></div>
+        
+        <!-- Зберегти чат -->
+        <button class="tool-btn" id="saveChatBtn" title="Зберегти чат">
+          <i class="fas fa-download"></i>
+        </button>
+        
+        <!-- Поділитися -->
+        <button class="tool-btn" id="shareChatBtn" title="Поділитися">
+          <i class="fas fa-share-alt"></i>
+        </button>
+      </div>
+
+      <!-- Індикатор запису голосу -->
+      <div class="voice-recording-indicator" id="voiceRecordingIndicator" style="display: none;">
+        <div class="recording-pulse"></div>
+        <span>Запис</span>
+        <span id="recordingTime">00:00</span>
+        <button class="stop-recording-btn" id="stopRecordingBtn" title="Зупинити запис">
+          <i class="fas fa-stop"></i>
+        </button>
+      </div>
+
+      <!-- Відео-панель -->
+      <div class="video-panel" id="videoPanel" style="display: none;">
+        <div class="video-header">
+          <h4>
+            <i class="fas fa-video"></i>
+            Відео аналіз емоцій
+          </h4>
+          <div class="header-buttons">
+            <button class="fullscreen-btn" id="fullscreenVideoBtn" title="На весь екран">
+              <i class="fas fa-expand"></i>
+            </button>
+            <button class="close-video-btn" id="closeVideoBtn" title="Закрити">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="video-main-content">
+          <!-- Ліва колонка - відео -->
+          <div class="video-column">
+            <div class="video-container" id="videoContainer">
+              <video id="localVideo" autoplay playsinline muted></video>
+              <div class="video-overlay" id="videoOverlay"></div>
+              
+              <!-- Індикатор запису відео -->
+              <div id="videoRecordingIndicator" style="display: none;"></div>
+              
+              <!-- Статус камери -->
+              <div class="camera-status" id="cameraStatus" style="display: none;">
+                <i class="fas fa-video-slash"></i>
+                <p>Камера вимкнена</p>
+                <button onclick="window.multimodalManager.startVideo()">
+                  <i class="fas fa-play"></i> Увімкнути камеру
+                </button>
+              </div>
+            </div>
+            
+            <div class="video-controls">
+              <button class="video-control-btn switch" id="toggleCameraBtn" title="Перемкнути камеру">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="video-control-btn capture" id="capturePhotoBtn" title="Зробити фото">
+                <i class="fas fa-camera"></i>
+              </button>
+              <button class="video-control-btn record" id="toggleVideoBtn" title="Запис відео">
+                <i class="fas fa-play"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Права колонка - аналітика -->
+          <div class="analytics-column">
+            <div class="emotion-stats">
+              <h4>
+                <i class="fas fa-chart-bar"></i>
+                Емоційний стан в реальному часі
+              </h4>
+              
+              <div class="emotion-bar">
+                <span><i class="fas fa-smile"></i> Радість</span>
+                <div class="progress">
+                  <div class="progress-fill" id="happyBar"></div>
+                </div>
+                <span class="emotion-value" id="happyValue">0%</span>
+              </div>
+              
+              <div class="emotion-bar">
+                <span><i class="fas fa-frown"></i> Сум</span>
+                <div class="progress">
+                  <div class="progress-fill" id="sadBar"></div>
+                </div>
+                <span class="emotion-value" id="sadValue">0%</span>
+              </div>
+              
+              <div class="emotion-bar">
+                <span><i class="fas fa-angry"></i> Гнів</span>
+                <div class="progress">
+                  <div class="progress-fill" id="angryBar"></div>
+                </div>
+                <span class="emotion-value" id="angryValue">0%</span>
+              </div>
+              
+              <div class="emotion-bar">
+                <span><i class="fas fa-flushed"></i> Страх</span>
+                <div class="progress">
+                  <div class="progress-fill" id="fearBar"></div>
+                </div>
+                <span class="emotion-value" id="fearValue">0%</span>
+              </div>
+              
+              <div class="emotion-bar">
+                <span><i class="fas fa-meh"></i> Стрес/Тривога</span>
+                <div class="progress">
+                  <div class="progress-fill" id="stressBar"></div>
+                </div>
+                <span class="emotion-value" id="stressValue">0%</span>
+              </div>
+            </div>
+            
+            <div class="emotion-summary" id="emotionSummary">
+              <h4>
+                <i class="fas fa-info-circle"></i>
+                Загальний стан
+              </h4>
+              <div class="summary-content">
+                <p>Очікування аналізу...</p>
+              </div>
+            </div>
+            
+            <!-- Індикатор кризи -->
+            <div class="crisis-indicator" id="crisisIndicator" style="display: none;">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span>Виявлено кризовий стан!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="emergency-banner" id="emergencyBanner">
+        <i class="fas fa-exclamation-circle"></i> КРИТИЧНА СИТУАЦІЯ — негайно зверніться за допомогою: Лінія довіри <strong>5522</strong> або <strong>0 800 100 102</strong>
+      </div>
+
+      
+      
+      <!-- Попередження для анонімних користувачів -->
+      <div class="anonymous-warning" id="anonymousWarning" style="display: none;">
+        <i class="fas fa-info-circle"></i> Ви не увійшли в акаунт. Історія чату не зберігатиметься.
+      </div>
+      
+      <div class="messages-container" id="messagesContainer">
+        <div class="message bot">
+          <div class="avatar">S</div>
+          <div class="message-content">
+            <div>Привіт! Я твій віртуальний супутник у складні моменти. Моя роль — надати тобі емоційну підтримку, вислухати без осуду та допомогти знайти внутрішні ресурси для подолання труднощів.</div>
+            <div class="message-time">Зараз</div>
+          </div>
+        </div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+          <span></span>
+          <span></span>
+          <span></span>
+          Я думаю над відповіддю...
+        </div>
+      </div>
+      
+      <div class="input-container">
+        <input 
+          type="text" 
+          id="userInput" 
+          placeholder="Напишіть, що вас турбує..." 
+          autocomplete="off"
+        >
+        <button id="sendButton">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+      
+      <div class="warning-message">
+        У критичних ситуаціях звертайтеся за фаховою допомогою: 
+        <span class="critical-contact">Кризова допомога 5522</span> або 
+        <span class="critical-contact">0 800 100 102</span> (цілодобово, безкоштовно)
+      </div>
+    </div>
+  </div>
+
+  <script src="js/theme.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/multimodal.js"></script>
+  
+  <script>
+    // Управління сайдбаром
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+      const showSidebarBtn = document.getElementById('showSidebarBtn');
+      const menuToggle = document.getElementById('menuToggleBtn');
+      const overlay = document.getElementById('sidebarOverlay');
+      
+      // Стан сайдбару (зберігаємо в localStorage)
+      let isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+      
+      // Функція сховати сайдбар
+      function collapseSidebar() {
+        if (sidebar) {
+          sidebar.classList.add('collapsed');
+          localStorage.setItem('sidebarCollapsed', 'true');
+          isSidebarCollapsed = true;
+          
+          if (showSidebarBtn) showSidebarBtn.style.display = 'flex';
+          if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+          if (sidebarToggleBtn) sidebarToggleBtn.title = 'Показати панель';
+          
+          // Додаємо клас для контейнера чату
+          document.querySelector('.chat-container')?.classList.add('sidebar-collapsed');
+        }
+      }
+      
+      // Функція показати сайдбар
+      function expandSidebar() {
+        if (sidebar) {
+          sidebar.classList.remove('collapsed');
+          localStorage.setItem('sidebarCollapsed', 'false');
+          isSidebarCollapsed = false;
+          
+          if (showSidebarBtn) showSidebarBtn.style.display = 'none';
+          if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+          if (sidebarToggleBtn) sidebarToggleBtn.title = 'Сховати панель';
+          
+          // Видаляємо клас з контейнера чату
+          document.querySelector('.chat-container')?.classList.remove('sidebar-collapsed');
+        }
+      }
+      
+      // Функція перемикання сайдбару
+      function toggleSidebar() {
+        if (isSidebarCollapsed) {
+          expandSidebar();
+        } else {
+          collapseSidebar();
+        }
+      }
+      
+      // Обробник для кнопки сховати/показати (тільки для десктопа)
+      if (sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleSidebar();
+        });
+      }
+      
+      // Обробник для кнопки показу (коли сайдбар схований)
+      if (showSidebarBtn) {
+        showSidebarBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          expandSidebar();
+        });
+      }
+      
+      // Мобільне меню
+      if (menuToggle) {
+        menuToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+            if (overlay) overlay.classList.remove('show');
+            document.body.style.overflow = '';
+          } else {
+            sidebar.classList.add('open');
+            if (overlay) overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+          }
+        });
+      }
+      
+      if (overlay) {
+        overlay.addEventListener('click', function() {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('show');
+          document.body.style.overflow = '';
+        });
+      }
+      
+      // При зміні розміру вікна
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+          // На десктопі застосовуємо збережений стан
+          if (isSidebarCollapsed) {
+            collapseSidebar();
+          } else {
+            expandSidebar();
+          }
+          // Закриваємо мобільне меню якщо відкрите
+          sidebar.classList.remove('open');
+          if (overlay) overlay.classList.remove('show');
+          document.body.style.overflow = '';
+        } else {
+          // На мобільних приховуємо кнопки сховати/показати
+          if (sidebarToggleBtn) sidebarToggleBtn.style.display = 'none';
+          if (showSidebarBtn) showSidebarBtn.style.display = 'none';
+          // Скидаємо клас collapsed для мобільних
+          sidebar.classList.remove('collapsed');
+          document.querySelector('.chat-container')?.classList.remove('sidebar-collapsed');
+        }
+      });
+      
+      // Ініціалізація стану при завантаженні
+      if (window.innerWidth > 768) {
+        if (isSidebarCollapsed) {
+          collapseSidebar();
+        } else {
+          expandSidebar();
+        }
+      }
+    });
+  </script>
+
+<script>
+// Діагностика аватара
+(function() {
+    console.log('🔍 Діагностика аватара запущена');
+    
+    // Перевіряємо localStorage
+    const savedAvatar = localStorage.getItem('userAvatar');
+    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    
+    console.log('savedAvatar exists:', !!savedAvatar);
+    console.log('savedAvatar type:', savedAvatar ? savedAvatar.substring(0, 50) : 'null');
+    console.log('user:', user);
+    console.log('user.avatar exists:', !!user.avatar);
+    
+    // Шукаємо елементи аватара
+    const avatarElements = document.querySelectorAll('.user-avatar, #userAvatar');
+    console.log('Знайдено елементів аватара:', avatarElements.length);
+    
+    avatarElements.forEach((el, i) => {
+        console.log(`Елемент ${i}:`, el);
+        console.log(`  - ID: ${el.id}`);
+        console.log(`  - Class: ${el.className}`);
+        console.log(`  - innerHTML: ${el.innerHTML.substring(0, 50)}`);
+    });
+    
+    // Примусово оновлюємо аватар
+    function forceUpdateAvatar() {
+        const avatarEl = document.querySelector('.user-avatar, #userAvatar');
+        if (!avatarEl) {
+            console.log('❌ Елемент аватара не знайдено!');
+            return;
+        }
+        
+        const savedAvatarImg = localStorage.getItem('userAvatar');
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        
+        console.log('Примусове оновлення аватара...');
+        console.log('savedAvatarImg:', savedAvatarImg ? 'є' : 'немає');
+        console.log('currentUser.avatar:', currentUser.avatar ? 'є' : 'немає');
+        
+        if (savedAvatarImg && savedAvatarImg.startsWith('data:image')) {
+            // Відображаємо зображення
+            avatarEl.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = savedAvatarImg;
+            img.alt = 'Avatar';
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.borderRadius = '50%';
+            img.style.objectFit = 'cover';
+            avatarEl.appendChild(img);
+            avatarEl.style.background = 'transparent';
+            console.log('✅ Аватар оновлено (зображення)');
+        } else if (currentUser.avatar && currentUser.avatar.startsWith('data:image')) {
+            // Альтернативне джерело
+            avatarEl.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = currentUser.avatar;
+            img.alt = 'Avatar';
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.borderRadius = '50%';
+            img.style.objectFit = 'cover';
+            avatarEl.appendChild(img);
+            avatarEl.style.background = 'transparent';
+            localStorage.setItem('userAvatar', currentUser.avatar);
+            console.log('✅ Аватар оновлено з currentUser');
+        } else {
+            // Показуємо ініціали
+            const initial = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U';
+            avatarEl.innerHTML = initial;
+            avatarEl.style.background = '#667eea';
+            avatarEl.style.color = 'white';
+            avatarEl.style.display = 'flex';
+            avatarEl.style.alignItems = 'center';
+            avatarEl.style.justifyContent = 'center';
+            avatarEl.style.fontWeight = 'bold';
+            avatarEl.style.fontSize = '18px';
+            console.log(`✅ Аватар оновлено (ініціали: ${initial})`);
+        }
+    }
+    
+    // Викликаємо при завантаженні
+    setTimeout(forceUpdateAvatar, 100);
+    
+    // Слухаємо зміни
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'userAvatar' || e.key === 'currentUser') {
+            console.log('Виявлено зміну в localStorage:', e.key);
+            setTimeout(forceUpdateAvatar, 100);
+        }
+    });
+})();
+</script>
+</body>
+</html>

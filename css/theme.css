@@ -1,0 +1,332 @@
+
+/* Оголошення CSS змінних для світлої теми (за замовчуванням) */
+:root {
+  /* Light theme (default) */
+  --bg: #f8f9fa; /* Основний фон */
+  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4eaf1 100%); /* Градієнт фону */
+  --ink: #1a365d; /* Основний колір тексту */
+  --muted: #718096; /* Приглушений колір тексту */
+  --brand: #2b6cb0; /* Брендовий колір (основний синій) */
+  --brand-dark: #2c5282; /* Темніший відтінок бренду */
+  --brand-light: #4299e1; /* Світліший відтінок бренду */
+  --card: #ffffff; /* Фон для карток, модальних вікон */
+  --ring: #e2e8f0; /* Колір для рамок, роздільників */
+  --ok: #38a169; /* Колір для позитивного статусу (OK, успіх) */
+  --warn: #e53e3e; /* Колір для попереджень, помилок */
+  --accent: #d53f8c; /* Акцентний колір */
+  --radius: 16px; /* Радіус скруглення кутів */
+  --radius-lg: 20px; /* Більший радіус скруглення */
+  --primary-light: rgba(59, 130, 246, 0.1);
+  --primary-dark: #2563eb;
+  --bg-hover: #f7fafc;
+  --shadow: 0 10px 30px rgba(26, 54, 93, 0.08); /* Тінь за замовчуванням */
+  --shadow-hover: 0 15px 40px rgba(26, 54, 93, 0.12); /* Тінь при наведенні */
+  --transition: all 0.3s ease; /* Загальна трансіція для анімацій */
+  
+  /* Chat specific */
+  --primary-color: #7e6dfa; /* Основний колір для чату (фіолетовий) */
+  --primary-dark: #6a58f5; /* Темніший основний колір */
+  --user-msg-bg: #e3eeff; /* Фон повідомлень користувача */
+  --bot-msg-bg: #f5f8ff; /* Фон повідомлень бота */
+  --critical-color: #ff4757; /* Колір для критичних елементів */
+  --sidebar-bg: #f8fafc; /* Фон бічної панелі */
+  --input-bg: #f9fafc; /* Фон полів вводу */
+  --border: #e2e8f0; /* Колір рамок */
+  
+  /* Analytics specific */
+  --stat-card-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Фон для карток статистики */
+  --insight-bg: #e3f2fd; /* Фон для інсайтів */
+  --chart-bg: #ffffff; /* Фон для графіків */
+}
+/* Темна тема */
+[data-theme="dark"] {
+  --bg: #0f172a; /* Темний основний фон */
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); /* Темний градієнт фону */
+  --ink: #f1f5f9; /* Світлий основний колір тексту */
+  --muted: #94a3b8; /* Темний приглушений колір тексту */
+  --brand: #3b82f6; /* Брендовий колір для темної теми */
+  --brand-dark: #2563eb;
+  --brand-light: #60a5fa;
+  --card: #1e293b; /* Темний фон для карток */
+  --ring: #334155; /* Темний колір для рамок */
+  --ok: #10b981;
+  --warn: #ef4444;
+  --accent: #ec4899;
+  --primary-light: rgba(59, 130, 246, 0.2);
+  --primary-dark: #3b82f6;
+  --bg-hover: #2d3748;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Темніші тіні */
+  --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.4);
+  
+  /* Chat specific dark */
+  --primary-color: #8b7bff;
+  --primary-dark: #7a68fa;
+  --user-msg-bg: #2d3748;
+  --bot-msg-bg: #1a202c;
+  --critical-color: #fc8181;
+  --sidebar-bg: #1a202c;
+  --input-bg: #2d3748;
+  --border: #4a5568;
+  
+  /* Analytics specific dark */
+  --stat-card-bg: linear-gradient(135deg, #4c6ef5 0%, #3b5bdb 100%);
+  --insight-bg: #1e3a5f;
+  --chart-bg: #1a202c;
+}
+
+/* ====== BASE THEME STYLES ====== */
+/* Глобальні стилі, що застосовують плавні переходи для тем */
+* {
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Застосування змінних теми до body */
+body {
+  background: var(--bg-gradient);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+
+/* ====== COMMON COMPONENTS ====== */
+/* Загальні стилі для карток, модалок тощо, що використовують змінні теми */
+.card, .modal, .talk-box, .feature-card, .blog-card, 
+.chart-container, .login-prompt, .insight-item {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+/* Стилі для полів вводу */
+input, textarea, select {
+  background: var(--input-bg);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--brand);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); /* Світіння при фокусі */
+}
+
+/* Загальні стилі для кнопок */
+button {
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+/* Стилі для первинної кнопки */
+.btn-primary {
+  background: var(--brand);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: var(--brand-dark);
+  transform: translateY(-1px); /* Ефект підйому */
+}
+
+/* Стилі для вторинної кнопки */
+.btn-secondary {
+  background: transparent;
+  color: var(--brand);
+  border: 2px solid var(--brand);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* Стилізація скроллбару для Webkit-браузерів (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px; /* Ширина скроллбару */
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg); /* Колір доріжки */
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted); /* Колір повзунка */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand); /* Колір повзунка при наведенні */
+}
+
+:root {
+    --primary-color: #667eea;
+    --accent-color: #764ba2;
+    --text-color: #2d3748;
+    --border-color: #e2e8f0;
+    --warn: #e53e3e;
+    --bg-hover: #f7fafc;
+}
+
+[data-theme="dark"] {
+    --text-color: #f7fafc;
+    --border-color: #4a5568;
+    --bg-hover: #2d3748;
+}
+
+/* Стилі для меню користувача */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border: 2px solid var(--border-color);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.user-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.user-avatar.has-photo {
+    background: none;
+    border: none;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user-name-btn {
+    background: var(--brand);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.user-name-btn:hover {
+    background: var(--brand-dark);
+    transform: translateY(-1px);
+}
+
+.btn-logout {
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-logout:hover {
+    background: var(--warn);
+    color: white;
+    border-color: var(--warn);
+}
+
+/* Адаптивність для мобільних */
+@media (max-width: 768px) {
+    .user-menu {
+        gap: 0.5rem;
+    }
+    
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .user-name-btn span {
+        display: none; /* Приховуємо ім'я на мобільних */
+    }
+    
+    .btn-logout span {
+        display: none; /* Приховуємо текст "Вийти" на мобільних */
+    }
+}
+
+/* Стилі для аватара користувача */
+.user-avatar, #userAvatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #667eea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.user-avatar img, #userAvatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Для мобільного меню */
+.mobile-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+}
