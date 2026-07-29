@@ -418,6 +418,8 @@ Kateryna Havryliuk
 
 Supervisor: Tetiana Mamchych, PhD, Associate Professor
 
+**Language Note:** The user interface and natural language processing are in Ukrainian, as the project is designed to serve Ukrainian-speaking users in need of psychological support.
+
 🙏 Acknowledgments
 Google Generative AI — Gemini API
 
